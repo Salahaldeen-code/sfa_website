@@ -6,7 +6,6 @@ import {
   Settings,
   Database,
   Shield,
-  BarChart3,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
@@ -16,53 +15,44 @@ import { Button } from "./ui/button";
 
 const plans = [
   {
-    name: "Basic",
+    name: "SMALL",
     color: "cyan",
     bgColor: "bg-white",
-    userLimit: "Up to 10 users",
+    userLimit: "User Limit: Up to 10 users",
     additionalUsers: {
-      price: "RM 100/user/month",
+      price: "RM 100/User/month",
       note: "(beyond 10 users)",
     },
-    infrastructure: "Cloud included",
-    licenseType: "Annual",
-    features: ["Basic Dashboard", "Email Support", "Mobile App"],
+    infrastructure: "Cloud infrastructure included",
+    pricing: "RM1,000/month include support",
+    licenseType: "Subscription",
   },
   {
-    name: "Professional",
+    name: "MEDIUM",
     color: "blue",
     bgColor: "bg-blue-50",
-    userLimit: "Up to 25 users",
+    userLimit: "User Limit: Up to 25 users",
     additionalUsers: {
-      price: "RM 50/user/month",
+      price: "RM 50/User/month",
       note: "(beyond 25 users)",
     },
-    infrastructure: "Cloud included",
-    licenseType: "Annual",
-    features: [
-      "Advanced Dashboard",
-      "Priority Support",
-      "API Access",
-      "Custom Reports",
-    ],
+    infrastructure: "Cloud infrastructure included",
+    pricing: "RM2,000/month include support",
+    licenseType: "Subscription",
   },
   {
     name: "Enterprise",
     color: "green",
     bgColor: "bg-white",
-    userLimit: "Unlimited users",
+    userLimit: "User Limit: Unlimited users",
     additionalUsers: {
-      price: "RM 5,000/year",
-      note: "for subsequent years",
+      price: "Unlimited users",
+      note: "",
     },
-    infrastructure: "Cloud (1st year) or on-premise",
+    infrastructure: "On-premise/own cloud",
+    pricing: "RM60,000 include first year warranty",
+    pricingNote: "Warranty support: RM10,000/year for subsequent years",
     licenseType: "Perpetual",
-    features: [
-      "Full Customization",
-      "24/7 Support",
-      "Dedicated Manager",
-      "On-premise Option",
-    ],
   },
 ];
 
@@ -90,17 +80,17 @@ const features = [
   },
   {
     icon: Shield,
-    iconColor: "text-purple-600",
-    iconBg: "bg-purple-100",
-    title: "License Type",
-    key: "licenseType",
-  },
-  {
-    icon: BarChart3,
     iconColor: "text-orange-600",
     iconBg: "bg-orange-100",
-    title: "Key Features",
-    key: "features",
+    title: "Pricing",
+    key: "pricing",
+  },
+  {
+    icon: Shield,
+    iconColor: "text-purple-600",
+    iconBg: "bg-purple-100",
+    title: "License",
+    key: "licenseType",
   },
 ];
 
@@ -127,10 +117,10 @@ export default function Component() {
               <span className="font-semibold text-gray-900">Features</span>
             </div>
             <div className="p-6 border-r border-gray-200 text-center">
-              <span className="font-semibold text-gray-900">Basic</span>
+              <span className="font-semibold text-gray-900">SMALL</span>
             </div>
             <div className="p-6 border-r border-gray-200 text-center bg-blue-50">
-              <span className="font-semibold text-gray-900">Professional</span>
+              <span className="font-semibold text-gray-900">MEDIUM</span>
             </div>
             <div className="p-6 text-center">
               <span className="font-semibold text-gray-900">Enterprise</span>
@@ -166,9 +156,7 @@ export default function Component() {
                         planIndex < plans.length - 1
                           ? "border-r border-gray-100"
                           : ""
-                      } ${plan.bgColor} ${
-                        feature.key === "features" ? "" : "text-center"
-                      }`}
+                      } ${plan.bgColor} text-center`}
                     >
                       {feature.key === "userLimit" && (
                         <span className="text-gray-700 font-medium">
@@ -180,9 +168,11 @@ export default function Component() {
                           <span className="text-sm text-gray-600">
                             {plan.additionalUsers.price}
                           </span>
-                          <p className="text-xs text-gray-500">
-                            {plan.additionalUsers.note}
-                          </p>
+                          {plan.additionalUsers.note && (
+                            <p className="text-xs text-gray-500">
+                              {plan.additionalUsers.note}
+                            </p>
+                          )}
                         </div>
                       )}
                       {feature.key === "infrastructure" && (
@@ -193,31 +183,22 @@ export default function Component() {
                           </span>
                         </div>
                       )}
+                      {feature.key === "pricing" && (
+                        <div>
+                          <span className="text-gray-700 font-semibold">
+                            {plan.pricing}
+                          </span>
+                          {"pricingNote" in plan && plan.pricingNote && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              {plan.pricingNote}
+                            </p>
+                          )}
+                        </div>
+                      )}
                       {feature.key === "licenseType" && (
-                        <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
-                            plan.licenseType === "Annual"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-green-100 text-green-800"
-                          }`}
-                        >
+                        <span className="text-gray-700 font-medium">
                           {plan.licenseType}
                         </span>
-                      )}
-                      {feature.key === "features" && (
-                        <div className="space-y-2">
-                          {plan.features.map((feat, featIndex) => (
-                            <div
-                              key={featIndex}
-                              className="flex items-center space-x-2"
-                            >
-                              <CheckCircle2 className="w-4 h-4 text-green-500" />
-                              <span className="text-sm text-gray-600">
-                                {feat}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
                       )}
                     </div>
                   ))}
@@ -268,15 +249,7 @@ export default function Component() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">License:</span>
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                        plan.licenseType === "Annual"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-green-100 text-green-800"
-                      }`}
-                    >
-                      {plan.licenseType}
-                    </span>
+                    <span className="text-sm font-medium">{plan.licenseType}</span>
                   </div>
                 </div>
               </div>
@@ -296,9 +269,11 @@ export default function Component() {
                       <p className="text-sm text-gray-600">
                         {plan.additionalUsers.price}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        {plan.additionalUsers.note}
-                      </p>
+                      {plan.additionalUsers.note && (
+                        <p className="text-xs text-gray-500">
+                          {plan.additionalUsers.note}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -320,28 +295,21 @@ export default function Component() {
                     </div>
                   </div>
 
-                  {/* Features */}
+                  {/* Pricing */}
                   <div className="flex items-start space-x-3">
                     <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <BarChart3 className="w-4 h-4 text-orange-600" />
+                      <Shield className="w-4 h-4 text-orange-600" />
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-900 mb-2">
-                        Key Features
+                        Pricing
                       </h4>
-                      <div className="space-y-2">
-                        {plan.features.map((feature, featIndex) => (
-                          <div
-                            key={featIndex}
-                            className="flex items-center space-x-2"
-                          >
-                            <CheckCircle2 className="w-4 h-4 text-green-500" />
-                            <span className="text-sm text-gray-600">
-                              {feature}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                      <p className="text-sm text-gray-600">{plan.pricing}</p>
+                      {"pricingNote" in plan && plan.pricingNote && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          {plan.pricingNote}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
